@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref as vueRef } from 'vue'
 import { db, auth } from 'boot/firebase'
-import { ref as dbRef, set, get, onChildAdded, remove, update, onChildChanged } from "firebase/database";
+import { ref as dbRef, set, get, onChildAdded, remove, update, onChildChanged, orderByChild, query } from "firebase/database";
 import { useQuasar, uid } from 'quasar';
 import { useUserStore } from './userStore';
 
@@ -13,13 +13,12 @@ export const useTaskManagerStore = defineStore('taskMangerStore', () => {
 
   const toggleForm = vueRef(false)
 
-
   const newTask = vueRef({
     title: "",
     description: "",
     deadline: "",
     action: '',
-    taskId: ''
+    taskId: '',
   });
 
   const getUserId = () => {
@@ -34,6 +33,7 @@ export const useTaskManagerStore = defineStore('taskMangerStore', () => {
       title: newTask.value.title,
       description: newTask.value.description,
       deadline: newTask.value.deadline,
+      completed: false,
       created: Date.now(),
     })
 
@@ -43,18 +43,40 @@ export const useTaskManagerStore = defineStore('taskMangerStore', () => {
       deadline: "",
       action: "",
     };
+
+
   }
 
   const tasks = vueRef({})
   const firebaseGetTasks = () => {
     const userId = getUserId()
 
-    onChildAdded(dbRef(db, `users/${userId}/tasks`), snapshot => {
-      tasks.value[snapshot.key] = snapshot.val()
+    const sortedTasks = query(dbRef(db, `users/${userId}/tasks`), orderByChild('deadline'));
+
+    onChildAdded(sortedTasks, snapshot => {
+      if (!snapshot.val().completed) {
+        tasks.value[snapshot.key] = snapshot.val()
+      }
     })
 
-    onChildChanged(dbRef(db, `users/${userId}/tasks`), snapshot => {
-      tasks.value[snapshot.key] = snapshot.val()
+    onChildChanged(sortedTasks, snapshot => {
+      if (!snapshot.val().completed) {
+        tasks.value[snapshot.key] = snapshot.val()
+      }
+    })
+  }
+
+  const completedTasks = vueRef({})
+  const showCompletedTasks = vueRef(false)
+  const firebaseGetCompletedTasks = () => {
+    const userId = getUserId()
+
+    const sortedTasks = query(dbRef(db, `users/${userId}/tasks`), orderByChild('deadline'));
+
+    onChildAdded(sortedTasks, snapshot => {
+      if (snapshot.val().completed) {
+        completedTasks.value[snapshot.key] = snapshot.val()
+      }
     })
   }
 
@@ -83,13 +105,44 @@ export const useTaskManagerStore = defineStore('taskMangerStore', () => {
     };
   }
 
+  const filterTaskContent = vueRef('')
+  const filteredTasks = vueRef({})
+  const filterTasks = () => {
+    const filtered = Object.keys(tasks.value).reduce((filteredTasks, taskId) => {
+      const task = tasks.value[taskId]
+
+      if (task.title.toLowerCase().includes(filterTaskContent.value.toLowerCase())) {
+        filteredTasks[taskId] = task
+      }
+
+      return filteredTasks
+    }, {})
+
+    filteredTasks.value = filtered
+  }
+
+  const firebaseTaskDone = (taskId) => {
+    const userId = getUserId()
+
+    update(dbRef(db, `users/${userId}/tasks/${taskId}`), {
+      completed: true
+    })
+  }
+
   return {
     tasks,
+    completedTasks,
     toggleForm,
+    showCompletedTasks,
     newTask,
+    filterTaskContent,
+    filteredTasks,
+    filterTasks,
     firebaseAddNewTask,
     firebaseGetTasks,
+    firebaseGetCompletedTasks,
     firebaseDeleteTask,
     firebaseUpdateTask,
+    firebaseTaskDone,
   }
 });

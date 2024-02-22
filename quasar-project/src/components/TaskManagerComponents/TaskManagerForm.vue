@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-dialog v-model="taskManagerStore.toggleForm" persistent>
+    <q-dialog v-model="taskManagerStore.toggleForm">
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">New Task</div>
@@ -64,20 +64,9 @@ const handleForm = () => {
 
   if (action == "addTask") {
     taskManagerStore.firebaseAddNewTask();
-
-    // taskManagerStore.newTask.value.title = ''
-    // taskManagerStore.newTask.value.description = ''
-    // taskManagerStore.newTask.value.deadline = ''
-    // taskManagerStore.newTask.value.action = ''
-    taskManagerStore.newTask.value.taskId = ''
+    // taskManagerStore.newTask.taskId = "";
   } else {
     taskManagerStore.firebaseUpdateTask();
-    // taskManagerStore.newTask.value = {
-    //   title: "",
-    //   description: "",
-    //   deadline: "",
-    //   action: "",
-    // };
   }
 };
 </script>

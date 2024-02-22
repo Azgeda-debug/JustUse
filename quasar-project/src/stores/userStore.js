@@ -49,11 +49,7 @@ export const useUserStore = defineStore('userStore', () => {
   }
 
   const firebaseLogout = () => {
-    signOut(auth).then(() => {
-      // Sign-out successful.
-    }).catch((error) => {
-      // An error happened.
-    });
+    signOut(auth)
   }
 
   const firebaseAuthStateChanged = () => {
@@ -63,8 +59,10 @@ export const useUserStore = defineStore('userStore', () => {
         const userId = user.uid;
 
         get(dbRef(db, `users/${userId}`)).then(snapshot => {
-          userDetails.value.name = snapshot.val().username,
-            userDetails.value.id = snapshot.key
+          if (snapshot.exists()) {
+            userDetails.value.name = snapshot.val().username,
+              userDetails.value.id = snapshot.key
+          }
         })
 
         router.push('/')
