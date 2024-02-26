@@ -34,7 +34,7 @@
           color="green"
         />
         <div class="flex justify-end full-width q-mt-xs">
-          <div>{{ shop.completedProducts }} / {{ shop.totalProducts }}</div>
+          <div>{{ shop.boughtProducts }} / {{ shop.totalProducts }}</div>
         </div>
       </q-card-section>
     </q-card>
@@ -70,7 +70,7 @@ const deleteShop = (key) => {
 
 const shopLinearProgress = (shop) => {
   let totalProducts = parseInt(shop.totalProducts);
-  let completedProducts = parseInt(shop.completedProducts);
+  let completedProducts = parseInt(shop.boughtProducts);
 
   if (completedProducts > 0) {
     let result = completedProducts / totalProducts;

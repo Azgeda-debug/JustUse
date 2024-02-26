@@ -8,6 +8,15 @@
 
         <q-card-section>
           <q-btn
+            @click="openNewChartDialog"
+            flat
+            round
+            size="lg"
+            color="primary"
+            icon="bar_chart"
+          />
+
+          <q-btn
             @click="openNewShopDialog"
             flat
             round
@@ -24,6 +33,7 @@
     </q-card>
 
     <NewShop />
+    <ChartDialog />
   </q-page>
 </template>
 
@@ -32,11 +42,17 @@ import { onMounted } from "vue";
 import { useShoppingListStore } from "stores/ShoppingListStore";
 import NewShop from "components/shoppingList/NewShop";
 import DisplayShops from "components/shoppingList/DisplayShops";
+import ChartDialog from "components/shoppingList/ChartDialog";
 
 const shoppingListStore = useShoppingListStore();
 
 const openNewShopDialog = () => {
   shoppingListStore.showNewShopDialog = true;
+};
+
+const openNewChartDialog = () => {
+  shoppingListStore.showChartDialog = true;
+  shoppingListStore.firebaseGetChart()
 };
 
 onMounted(() => {

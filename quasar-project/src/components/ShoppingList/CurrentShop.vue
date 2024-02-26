@@ -1,6 +1,14 @@
 <template>
   <q-dialog v-model="shoppingListStore.openCurrentShopDialog">
-    <q-card style="min-width: 450px">
+    <q-card
+      :style="
+        $q.screen.width <= 600
+          ? 'min-width: 100%'
+          : $q.screen.width > 600 && $q.screen.width <= 800
+          ? 'min-width: 80%'
+          : 'min-width: 60%'
+      "
+    >
       <q-card-section class="flex items-center justify-between">
         <div class="flex q-gutter-md">
           <div class="text-h6">{{ shoppingListStore.selectedShop.name }}</div>
@@ -24,46 +32,43 @@
 
       <q-card-section
         v-if="Object.keys(shoppingListStore.products).length"
-        class="q-pt-none"
+        class="q-pa-none"
       >
-        <q-scroll-area
-          :thumb-style="thumbStyle"
-          :bar-style="barStyle"
-          style="height: 600px; max-width: 100%"
+        <q-card class="shadow-0">
+          <q-tabs
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          >
+            <q-tab no-caps name="productsToBuy" label="Products to Buy" />
+            <q-tab no-caps name="boughtProducts" label="Bought Products" />
+          </q-tabs>
+
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="productsToBuy">
+              <ShowProducts :completed="false" />
+            </q-tab-panel>
+
+            <q-tab-panel name="boughtProducts">
+              <ShowProducts :completed="true" />
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </q-card-section>
+
+      <q-card-section class="absolute-bottom">
+        <span v-show="tab == 'productsToBuy'"
+          >Total Price:
+          <span class="text-bold">{{ productsToBuyTotalPrice }} $</span></span
         >
-          <q-list>
-            <q-item
-              v-for="(product, key) in shoppingListStore.products"
-              :key="key"
-              class="q-my-xs"
-            >
-              <q-checkbox @click="shoppingListStore.productBought(product, key)" v-model="product.completed" />
-
-              <q-item-section>
-                <div class="flex items-center">
-                  <q-item-label class="text-h6">{{
-                    product.name
-                  }}</q-item-label>
-                </div>
-                <q-item-label>{{ product.quantity }}</q-item-label>
-              </q-item-section>
-
-              <q-item-section side>
-                <q-item-label class="text-h6"
-                  >{{ product.price }}$</q-item-label
-                >
-              </q-item-section>
-              <q-btn
-                @click="deleteProduct(key)"
-                flat
-                dense
-                rounded
-                color="red"
-                icon="delete"
-              />
-            </q-item>
-          </q-list>
-        </q-scroll-area>
+        <span v-show="tab == 'boughtProducts'"
+          >Total Price:
+          <span class="text-bold">{{ boughtProductsTotalPrice }} $</span></span
+        >
       </q-card-section>
 
       <q-card-actions align="right">
@@ -77,8 +82,12 @@
   
 <script setup>
 import { useShoppingListStore } from "stores/ShoppingListStore";
-import { onBeforeUnmount, } from "vue";
 import NewProduct from "./NewProduct";
+import { computed, ref } from "vue";
+import { useQuasar } from "quasar";
+import ShowProducts from "components/ShoppingList/ShowProducts";
+
+const $q = useQuasar();
 
 const shoppingListStore = useShoppingListStore();
 
@@ -86,24 +95,15 @@ const openNewProductDialog = () => {
   shoppingListStore.newProductDialog = true;
 };
 
-const deleteProduct = (key) => {
-  shoppingListStore.firebaseDeleteProduct(key);
-};
+const productsToBuyTotalPrice = computed(() => {
+  const shopId = shoppingListStore.selectedShop.shopId;
+  return shoppingListStore.shops[shopId].productsToBuyTotalPrice;
+});
 
-const thumbStyle = {
-  right: "4px",
-  borderRadius: "5px",
-  backgroundColor: "#027be3",
-  width: "5px",
-  opacity: 0.75,
-};
+const boughtProductsTotalPrice = computed(() => {
+  const shopId = shoppingListStore.selectedShop.shopId;
+  return shoppingListStore.shops[shopId].boughtProductsTotalPrice;
+});
 
-const barStyle = {
-  right: "2px",
-  borderRadius: "9px",
-  backgroundColor: "#027be3",
-  width: "9px",
-  opacity: 0.2,
-};
-
+const tab = ref("productsToBuy");
 </script>

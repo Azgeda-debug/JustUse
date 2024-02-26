@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref as vueRef } from 'vue'
 import { db } from 'boot/firebase'
-import { ref as dbRef, set, onChildAdded, remove, update, increment, onChildChanged } from "firebase/database";
+import { ref as dbRef, set, get, onChildAdded, remove, update, increment, onChildChanged } from "firebase/database";
 import { useUserStore } from './userStore';
 import { uid, useQuasar } from 'quasar';
 
@@ -46,17 +46,45 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
         return userStore.userDetails.id
     }
 
+    const getShopId = () => {
+        return selectedShop.value.shopId
+    }
+
     const firebaseAddShop = () => {
         const userId = getUserId()
         const shopId = uid()
 
-        if (newShop.value.name) {
+        const addShop = () => {
             set(dbRef(db, `users/${userId}/shopping/shops/${shopId}`), {
                 name: newShop.value.name,
                 icon: newShop.value.icon,
                 totalProducts: 0,
-                completedProducts: 0,
+                boughtProducts: 0,
+                productsToBuyTotalPrice: 0,
+                boughtProductsTotalPrice: 0,
             })
+        }
+
+        if (Object.keys(shops.value).length) {
+            let shopAlreadyExists = false;
+
+            for (const key in shops.value) {
+                if (shops.value[key].name.toLowerCase() == newShop.value.name.toLowerCase()) {
+                    shopAlreadyExists = true
+                }
+            }
+
+            if (shopAlreadyExists) {
+                $q.notify({
+                    type: 'negative',
+                    message: 'The shop has already been added.'
+                })
+            } else {
+                addShop()
+            }
+
+        } else {
+            addShop()
         }
     }
 
@@ -79,7 +107,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
         $q.dialog({
             dark: true,
             title: 'Are you sure?',
-            message: "Deleted shop can't be restored",
+            message: "Deleted shop cannot be restored. The cost chart for this shop will also not be available.",
             cancel: {
                 color: 'red'
             },
@@ -87,6 +115,8 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
                 color: 'primary'
             }
         }).onOk(() => {
+            if (shops.value[shopId]) delete shopChart.value[shops.value[shopId].name]
+
             delete shops.value[shopId]
             remove(dbRef(db, `users/${userId}/shopping/shops/${shopId}`))
         }).onCancel(() => {
@@ -106,7 +136,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
 
     const addNewProduct = () => {
         const userId = getUserId()
-        const shopId = selectedShop.value.shopId
+        const shopId = getShopId()
         const productId = uid()
 
         if (newProduct.value.name && newProduct.value.price) {
@@ -118,6 +148,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
             }).then(() => {
                 const updates = {}
                 updates[`users/${userId}/shopping/shops/${shopId}/totalProducts`] = increment(1)
+                updates[`users/${userId}/shopping/shops/${shopId}/productsToBuyTotalPrice`] = increment(parseInt(newProduct.value.price))
 
                 update(dbRef(db), updates)
 
@@ -132,7 +163,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
     const products = vueRef({})
     const firebaseGetProducts = () => {
         const userId = getUserId()
-        const shopId = selectedShop.value.shopId
+        const shopId = getShopId()
 
         onChildAdded(dbRef(db, `users/${userId}/shopping/shops/${shopId}/products`), snapshot => {
             products.value[snapshot.key] = snapshot.val()
@@ -146,7 +177,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
 
     const firebaseDeleteProduct = (productId) => {
         const userId = getUserId()
-        const shopId = selectedShop.value.shopId
+        const shopId = getShopId()
 
         $q.dialog({
             dark: true,
@@ -158,14 +189,23 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
                 color: 'primary',
             },
         }).onOk(() => {
+            get(dbRef(db, `users/${userId}/shopping/shops/${shopId}/products/${productId}`)).then((snapshot) => {
+                const updates = {}
+
+                if (snapshot.val().completed) {
+                    updates[`users/${userId}/shopping/shops/${shopId}/boughtProducts`] = increment(-1)
+                    updates[`users/${userId}/shopping/shops/${shopId}/totalProducts`] = increment(-1)
+                    updates[`users/${userId}/shopping/shops/${shopId}/boughtProductsTotalPrice`] = increment(-snapshot.val().price)
+                } else {
+                    updates[`users/${userId}/shopping/shops/${shopId}/totalProducts`] = increment(-1)
+                    updates[`users/${userId}/shopping/shops/${shopId}/productsToBuyTotalPrice`] = increment(-snapshot.val().price)
+                }
+
+                update(dbRef(db), updates)
+            })
+
             delete products.value[productId]
             remove(dbRef(db, `users/${userId}/shopping/shops/${shopId}/products/${productId}`))
-
-            const updates = {}
-            updates[`users/${userId}/shopping/shops/${shopId}/totalProducts`] = increment(-1)
-
-            update(dbRef(db), updates)
-
         }).onCancel(() => {
 
         })
@@ -173,7 +213,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
 
     const productBought = (product, key) => {
         const userId = getUserId()
-        const shopId = selectedShop.value.shopId
+        const shopId = getShopId()
         const productId = key
 
         update((dbRef(db, `users/${userId}/shopping/shops/${shopId}/products/${productId}`)), {
@@ -182,17 +222,32 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
 
         if (product.completed) {
             const updates = {}
-            updates[`users/${userId}/shopping/shops/${shopId}/completedProducts`] = increment(1)
+            updates[`users/${userId}/shopping/shops/${shopId}/boughtProducts`] = increment(1)
+            updates[`users/${userId}/shopping/shops/${shopId}/boughtProductsTotalPrice`] = increment(parseInt(product.price))
+            updates[`users/${userId}/shopping/shops/${shopId}/productsToBuyTotalPrice`] = increment(-parseInt(product.price))
 
             update(dbRef(db), updates)
         }
         else {
             const updates = {}
-            updates[`users/${userId}/shopping/shops/${shopId}/completedProducts`] = increment(-1)
+            updates[`users/${userId}/shopping/shops/${shopId}/boughtProducts`] = increment(-1)
+            updates[`users/${userId}/shopping/shops/${shopId}/boughtProductsTotalPrice`] = increment(-parseInt(product.price))
+            updates[`users/${userId}/shopping/shops/${shopId}/productsToBuyTotalPrice`] = increment(parseInt(product.price))
 
             update(dbRef(db), updates)
         }
     }
+
+    const showChartDialog = vueRef(false)
+    const shopChart = vueRef({})
+
+    const firebaseGetChart = () => {
+        Object.keys(shops.value).forEach(shopId => {
+            const key = `${shops.value[shopId].name}`
+
+            shopChart.value[key] = shops.value[shopId].boughtProductsTotalPrice
+        })
+    };
 
     return {
         shops,
@@ -205,7 +260,8 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
         newProductDialog,
         newProduct,
         products,
-
+        showChartDialog,
+        shopChart,
         firebaseAddShop,
         firebaseGetShops,
         firebaseDeleteShop,
@@ -214,5 +270,6 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
         firebaseClearProducts,
         firebaseDeleteProduct,
         productBought,
+        firebaseGetChart,
     }
 });
