@@ -63,6 +63,11 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
                 productsToBuyTotalPrice: 0,
                 boughtProductsTotalPrice: 0,
             })
+
+            newShop.value = {
+                name: '',
+                icon: '',
+            }
         }
 
         if (Object.keys(shops.value).length) {
@@ -151,6 +156,12 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
                 updates[`users/${userId}/shopping/shops/${shopId}/productsToBuyTotalPrice`] = increment(parseInt(newProduct.value.price))
 
                 update(dbRef(db), updates)
+
+                newProduct.value = {
+                    name: '',
+                    price: '',
+                    quantity: '',
+                }
 
                 $q.notify({
                     type: 'positive',
