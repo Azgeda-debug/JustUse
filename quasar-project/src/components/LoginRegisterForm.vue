@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+    <q-form class="q-gutter-md">
       <q-input
         v-show="props.tab == 'register'"
         outlined
@@ -43,7 +43,7 @@
       </q-input>
 
       <div class="text-center">
-        <q-btn :label="props.tab" type="submit" color="primary" />
+        <q-btn @click.prevent="onSubmit" :label="props.tab" type="submit" color="primary" />
       </div>
     </q-form>
   </div>

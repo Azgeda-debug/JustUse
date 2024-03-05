@@ -2,7 +2,12 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat icon="menu" class="absolute-left">
+        <q-btn
+          v-show="userStore.userDetails.id"
+          flat
+          icon="menu"
+          class="absolute-left"
+        >
           <q-menu transition-show="scale" transition-hide="scale">
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup to="/task-manager">
@@ -33,7 +38,7 @@
         <q-toolbar-title class="absolute-center"> Just Use </q-toolbar-title>
 
         <q-btn
-        v-if="userStore.userDetails && userStore.userDetails.id"
+          v-if="userStore.userDetails && userStore.userDetails.id"
           @click="logout()"
           no-caps
           flat
@@ -52,7 +57,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted } from "vue";
 import { useUserStore } from "stores/userStore";
 
 const userStore = useUserStore();
