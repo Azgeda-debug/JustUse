@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px; margin: 0 auto">
+  <div class="q-pa-md">
     <q-form @submit.prevent="onSubmit" class="q-gutter-md">
       <q-input
         v-show="props.tab == 'register'"
