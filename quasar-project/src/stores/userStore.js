@@ -34,7 +34,7 @@ export const useUserStore = defineStore('userStore', () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // ..
+
       });
   }
 
@@ -65,7 +65,7 @@ export const useUserStore = defineStore('userStore', () => {
           }
         })
 
-        router.push('/')
+        router.push('/task-manager')
 
       } else {
 

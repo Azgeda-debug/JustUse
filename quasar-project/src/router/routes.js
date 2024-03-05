@@ -1,6 +1,5 @@
 import ErrorNotFound from 'pages/ErrorNotFound.vue'
 import MainLayout from 'layouts/MainLayout.vue'
-import HomePage from 'pages/HomePage.vue'
 import AuthPage from 'pages/AuthPage.vue'
 import TaskManagerPage from 'pages/TaskManagerPage.vue'
 import ExpenseCalculatorPage from 'pages/ExpenseCalculatorPage.vue'
@@ -16,11 +15,6 @@ const routes = [
     name: 'MainLayout',
     component: MainLayout,
     children: [
-      {
-        path: '',
-        name: 'HomePage',
-        component: HomePage,
-      },
       {
         path: '/auth',
         name: 'AuthPage',
