@@ -23,6 +23,7 @@
         <q-tab-panel name="weekly">
           <div class="text-h6">Weekly Expenses</div>
           <column-chart
+            v-show="expenseCalculatorStore.weeklyExpenses"
             suffix="$"
             thousands=","
             empty="No data"
@@ -33,6 +34,7 @@
         <q-tab-panel name="monthly">
           <div class="text-h6">Monthly Expenses</div>
           <column-chart
+            v-show="expenseCalculatorStore.monthlyExpenses"
             suffix="$"
             thousands=","
             empty="No data"
@@ -43,6 +45,7 @@
         <q-tab-panel name="yearly">
           <div class="text-h6">Yearly Expenses</div>
           <column-chart
+            v-show="expenseCalculatorStore.yearlyExpenses"
             suffix="$"
             thousands=","
             empty="No data"
@@ -61,7 +64,7 @@ import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 
-const tab = ref("yearly");
+const tab = ref("weekly");
 
 const expenseCalculatorStore = useExpenseCalculatorStore();
 </script>

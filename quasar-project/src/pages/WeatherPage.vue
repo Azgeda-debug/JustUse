@@ -1,19 +1,10 @@
 <template>
-  <q-page
-    class="weather-container"
-    :class="
-      weatherStore.weatherDetails.main &&
-      weatherStore.weatherDetails.main.temp < 0
-        ? 'cold'
-        : 'warm'
-    "
-  >
+  <q-page>
     <q-input
       @keyup.enter="weatherStore.searchWeather"
       v-model="weatherStore.searchWeatherInput"
       bottom-slots
       class="text-bold"
-      :dark="true"
       label="Search"
       style="max-width: 90%; margin: 0 auto"
     >
@@ -124,7 +115,7 @@
             :key="i"
             class="col-2 row q-gutter-sm"
           >
-            <span class="col-12 text-bold text-white">{{
+            <span class="col-12 text-bold">{{
               i === 0
                 ? "Today"
                 : returnDate(weatherStore.nextDaysWeatherDetails.list[index].dt)
@@ -135,7 +126,7 @@
                 width="64px"
                 :src="`https://openweathermap.org/img/wn/${weatherStore.nextDaysWeatherDetails.list[index].weather[0].icon}.png`"
             /></span>
-            <span class="col-12 text-bold text-white"
+            <span class="col-12 text-bold"
               >{{
                 Math.round(
                   weatherStore.nextDaysWeatherDetails.list[index].main.temp
@@ -173,24 +164,3 @@ const returnDate = (timestamp) => {
   return `${days[day]}`;
 };
 </script>
-
-<style lang="scss" scoped>
-.weather-container {
-  &.warm,
-  &.cold {
-    background-repeat: no-repeat;
-    background-size: cover;
-    transition: background-image 1s ease, background-position 1s ease;
-  }
-
-  &.warm {
-    background-image: url("../assets/warm-landscape.jpg");
-    background-position: center top;
-  }
-
-  &.cold {
-    background-image: url("../assets/cold-landscape.jpg");
-    background-position: center 75%;
-  }
-}
-</style>

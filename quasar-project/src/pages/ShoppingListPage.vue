@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-lg">
     <q-card>
-      <q-card-section class="flex justify-between items-center">
+      <div class="flex justify-between items-center">
         <q-card-section>
           <div class="text-h6">My shops</div>
         </q-card-section>
@@ -25,7 +25,7 @@
             icon="add_circle"
           />
         </q-card-section>
-      </q-card-section>
+      </div>
 
       <q-card-section>
         <DisplayShops />

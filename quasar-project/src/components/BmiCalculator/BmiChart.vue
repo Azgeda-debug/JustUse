@@ -12,7 +12,7 @@
         <div class="text-center">
           <span class="text-h6">
             Add your BMI only once a day. If you add more than once, only the
-            last one will be displayed.</span
+            first one will be displayed.</span
           >
         </div>
         <line-chart :data="bmiStore.chartHistory"></line-chart>
