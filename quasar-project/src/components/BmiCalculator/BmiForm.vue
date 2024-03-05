@@ -47,9 +47,11 @@ const bmiForm = ref({
 
 const CalculateBmi = () => {
   if (bmiForm.value.height && bmiForm.value.weight) {
-    bmiStore.calculatedBmi = (
-      bmiForm.value.weight / Math.pow(bmiForm.value.height / 100, 2)
-    ).toFixed(2);
+    bmiStore.calculatedBmi = parseFloat(
+      (bmiForm.value.weight / Math.pow(bmiForm.value.height / 100, 2)).toFixed(
+        2
+      )
+    );
   }
 };
 </script>

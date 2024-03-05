@@ -30,7 +30,7 @@
 
         <q-separator />
 
-        <q-card-section class="">
+        <q-card-section>
           <q-item-label>{{ task.description }}</q-item-label>
         </q-card-section>
 
