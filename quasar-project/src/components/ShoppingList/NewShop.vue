@@ -4,12 +4,17 @@
       <q-card style="min-width: 350px">
         <q-card-section>
           <q-input
+            @keyup.enter="shoppingListStore.firebaseAddShop"
             dense
             outlined
             rounded
             v-model="shoppingListStore.newShop.name"
-            label="Shop's Name"
-          />
+            label="Store Name"
+          >
+            <template v-slot:prepend>
+              <q-icon name="store" />
+            </template>
+          </q-input>
         </q-card-section>
 
         <q-card-actions align="right">

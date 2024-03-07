@@ -40,7 +40,7 @@ export const useCurrencyCalculatorStore = defineStore('currencyCalculatorStore',
         } else {
             $q.notify({
                 type: 'negative',
-                message: 'Fill in all fields'
+                message: 'Fill in all fields.'
             })
         }
     }

@@ -3,17 +3,17 @@
     <div
       :style="$q.screen.width <= 500 ? 'min-width: 90%' : 'min-width: 500px'"
     >
-      <span
-        v-show="!Object.keys(taskManagerStore.completedTasks).length"
-        class="text-body1"
-        >Your completed tasks list is empty.
-      </span>
+      <q-card class="q-pa-sm">
+        <div class="text-center">
+          <span
+          v-show="!Object.keys(taskManagerStore.completedTasks).length"
+          class="text-body1"
+          >Your completed tasks list is empty.
+        </span>
+        </div>
 
-      <q-card
-        v-if="Object.keys(taskManagerStore.completedTasks).length"
-        class="q-pa-sm"
-      >
         <q-scroll-area
+          v-if="Object.keys(taskManagerStore.completedTasks).length"
           :thumb-style="thumbStyle"
           :bar-style="barStyle"
           style="height: 70dvh; max-width: 100%"
@@ -45,8 +45,6 @@
             <q-separator />
           </q-list>
         </q-scroll-area>
-
-       
 
         <q-card-actions align="right" class="text-primary">
           <q-btn no-caps v-close-popup color="red" label="Cancel" />

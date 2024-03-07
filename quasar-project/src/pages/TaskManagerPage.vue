@@ -35,7 +35,11 @@
         v-model="taskManagerStore.filterTaskContent"
         label="Filter Tasks by Title"
         :style="$q.screen.width > 600 ? 'width: 280px' : 'width: 100%'"
-      />
+      >
+      <template v-slot:append>
+        <q-icon name="search" />
+      </template>
+    </q-input>
     </div>
     <TaskManagerShowTasks class="q-mt-xl" />
     <TaskManagerShowCompletedTasks />

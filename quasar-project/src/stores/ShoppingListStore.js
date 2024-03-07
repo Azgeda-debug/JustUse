@@ -54,6 +54,15 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
         const userId = getUserId()
         const shopId = uid()
 
+        if (!newShop.value.name) {
+            $q.notify({
+                type: 'negative',
+                message: 'Provide the store name.'
+            })
+
+            return
+        }
+
         const addShop = () => {
             set(dbRef(db, `users/${userId}/shopping/shops/${shopId}`), {
                 name: newShop.value.name,
@@ -82,7 +91,7 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
             if (shopAlreadyExists) {
                 $q.notify({
                     type: 'negative',
-                    message: 'The shop has already been added.'
+                    message: 'The store has already been added.'
                 })
             } else {
                 addShop()
@@ -165,8 +174,13 @@ export const useShoppingListStore = defineStore('shoppingListStore', () => {
 
                 $q.notify({
                     type: 'positive',
-                    message: 'Product added'
+                    message: 'Product added.'
                 })
+            })
+        } else {
+            $q.notify({
+                type: 'negative',
+                message: 'Add the product name and the price.'
             })
         }
     }

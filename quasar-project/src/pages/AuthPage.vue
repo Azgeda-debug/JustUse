@@ -11,18 +11,18 @@
           align="justify"
           narrow-indicator
         >
-          <q-tab name="login" label="Login" />
-          <q-tab name="register" label="Register" />
+          <q-tab name="Login" label="Login" />
+          <q-tab name="Register" label="Register" />
         </q-tabs>
 
         <q-separator />
 
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="login">
+          <q-tab-panel name="Login">
             <LoginRegisterForm :tab="tab" />
           </q-tab-panel>
 
-          <q-tab-panel name="register">
+          <q-tab-panel name="Register">
             <LoginRegisterForm :tab="tab" />
           </q-tab-panel>
         </q-tab-panels>
@@ -35,5 +35,5 @@
 import { ref } from "vue";
 import LoginRegisterForm from "components/LoginRegisterForm.vue";
 
-const tab = ref("login");
+const tab = ref("Login");
 </script>

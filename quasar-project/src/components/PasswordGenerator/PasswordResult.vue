@@ -45,7 +45,7 @@ const copyPassword = () => {
 
   $q.notify({
     type: "positive",
-    message: "copied",
+    message: "copied.",
   });
 };
 </script>

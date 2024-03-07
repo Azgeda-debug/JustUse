@@ -25,7 +25,8 @@
         v-model="currencyCalculatorStore.formData.amount"
         placeholder="Amount"
         type="number"
-        min="1"
+        min="0.1"
+        step="0.1"
       />
       <div class="flex justify-between items-center">
         <div v-show="currencyCalculatorStore.conversion">

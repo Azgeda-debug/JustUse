@@ -1,10 +1,12 @@
 <template>
   <div>
-    <span
+    <div class="text-center">
+      <span
       v-show="!Object.keys(taskManagerStore.tasks).length"
       class="text-body1"
       >Your task list is empty. Start tracking your task by adding a task
     </span>
+    </div>
 
     <div v-if="Object.keys(taskManagerStore.tasks).length" class="q-gutter-md">
       <q-card
