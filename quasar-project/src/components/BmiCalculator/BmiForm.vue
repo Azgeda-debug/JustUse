@@ -37,6 +37,9 @@
 <script setup>
 import { ref } from "vue";
 import { useBmiStore } from "stores/bmiStore";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 const bmiStore = useBmiStore();
 
@@ -46,6 +49,14 @@ const bmiForm = ref({
 });
 
 const CalculateBmi = () => {
+  if (!bmiForm.value.height || !bmiForm.value.weight) {
+    $q.notify({
+      type: "negative",
+      message: "Fill in all fields.",
+    });
+    return;
+  }
+
   if (bmiForm.value.height && bmiForm.value.weight) {
     bmiStore.calculatedBmi = parseFloat(
       (bmiForm.value.weight / Math.pow(bmiForm.value.height / 100, 2)).toFixed(

@@ -139,7 +139,7 @@ export const useUserStore = defineStore('userStore', () => {
 
   const forgotPasswordDialog = vueRef(false)
   const openForgotPasswordDialog = () => {
-    ForgotPasswordDialog.value = true
+    forgotPasswordDialog.value = true
   }
 
   const emailAddress = vueRef('')

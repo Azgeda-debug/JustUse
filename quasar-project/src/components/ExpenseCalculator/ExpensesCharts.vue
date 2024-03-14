@@ -53,6 +53,16 @@
           ></column-chart>
         </q-tab-panel>
       </q-tab-panels>
+
+      <q-card-actions align="right">
+        <q-btn
+          no-caps
+          v-close-popup
+          class="bg-red-6 text-white"
+          padding="6px 30px"
+          label="Close"
+        />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>

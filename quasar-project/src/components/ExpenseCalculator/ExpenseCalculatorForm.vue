@@ -3,11 +3,12 @@
     <q-form
       class="q-gutter-md"
       style="margin: 0 auto"
-      :style="$q.screen.width <= 600 ? 'max-width: 80%;' : 'max-width: 60%;'"
+      :style="$q.screen.width <= 600 ? 'max-width: 90%;' : 'max-width: 60%;'"
     >
       <q-select
         outlined
         dense
+        rounded
         :options="options"
         v-model="expenseCalculatorStore.formData.selectedOption"
         label="Select period"
@@ -19,6 +20,7 @@
           expenseCalculatorStore.formData.selectedOption === 'Weekly'
         "
         outlined
+        rounded
         dense
         :options="months"
         v-model="expenseCalculatorStore.formData.month"
@@ -29,6 +31,7 @@
         v-if="expenseCalculatorStore.formData.selectedOption === 'Weekly'"
         outlined
         dense
+        rounded
         min="1"
         max="5"
         type="number"
@@ -39,6 +42,7 @@
       <q-input
         v-if="expenseCalculatorStore.formData.selectedOption"
         outlined
+        rounded
         dense
         min="1"
         type="number"
@@ -48,6 +52,7 @@
 
       <q-input
         outlined
+        rounded
         dense
         min="1"
         type="number"
@@ -67,9 +72,11 @@
         />
         <q-btn
           @click.prevent="handleForm"
-          label="Submit"
+          label="Add"
           type="submit"
-          color="primary"
+          class="bg-primary text-white"
+          padding="6px 30px"
+          no-caps
         />
       </div>
     </q-form>
@@ -115,6 +122,15 @@ const months = [
 ];
 
 const handleForm = () => {
+  if (!expenseCalculatorStore.formData.selectedOption) {
+    $q.notify({
+      type: "negative",
+      message: "Select Period",
+    });
+
+    return;
+  }
+
   switch (expenseCalculatorStore.formData.selectedOption) {
     case "Weekly":
       if (
@@ -123,7 +139,7 @@ const handleForm = () => {
       ) {
         $q.notify({
           type: "negative",
-          message: "Please fill in all fields",
+          message: "Fill in all fields",
         });
         return;
       }
@@ -143,7 +159,7 @@ const handleForm = () => {
       ) {
         $q.notify({
           type: "negative",
-          message: "Please fill in all fields",
+          message: "Fill in all fields",
         });
         return;
       }
@@ -163,7 +179,7 @@ const handleForm = () => {
       ) {
         $q.notify({
           type: "negative",
-          message: "Please fill in all fields",
+          message: "Fill in all fields",
         });
         return;
       }

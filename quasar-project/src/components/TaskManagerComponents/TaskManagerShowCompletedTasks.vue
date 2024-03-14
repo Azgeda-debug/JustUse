@@ -6,10 +6,10 @@
       <q-card class="q-pa-sm">
         <div class="text-center">
           <span
-          v-show="!Object.keys(taskManagerStore.completedTasks).length"
-          class="text-body1"
-          >Your completed tasks list is empty.
-        </span>
+            v-show="!Object.keys(taskManagerStore.completedTasks).length"
+            class="text-body1"
+            >Your completed tasks list is empty.
+          </span>
         </div>
 
         <q-scroll-area
@@ -47,7 +47,13 @@
         </q-scroll-area>
 
         <q-card-actions align="right" class="text-primary">
-          <q-btn no-caps v-close-popup color="red" label="Cancel" />
+          <q-btn
+            no-caps
+            v-close-popup
+            class="bg-red-6 text-white"
+            padding="6px 30px"
+            label="Close"
+          />
         </q-card-actions>
       </q-card>
     </div>

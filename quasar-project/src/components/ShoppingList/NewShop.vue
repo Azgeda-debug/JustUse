@@ -19,19 +19,32 @@
 
         <q-card-actions align="right">
           <q-btn
-            @click="openIconDialog"
-            flat
             no-caps
-            label="Choose Icon"
-            color="primary"
-          />
-          <q-btn
-            @click="shoppingListStore.firebaseAddShop"
-            flat
-            label="OK"
-            color="primary"
             v-close-popup
+            class="bg-red-6 text-white"
+            padding="6px 30px"
+            label="Close"
           />
+
+          <q-btn-dropdown color="primary" label="Actions">
+            <q-list>
+              <q-item clickable @click="openIconDialog">
+                <q-item-section>
+                  <q-item-label>Choose Icon</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item
+                clickable
+                v-close-popup
+                @click="shoppingListStore.firebaseAddShop"
+              >
+                <q-item-section>
+                  <q-item-label>Add Store</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -62,8 +75,13 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-          <q-btn flat no-caps label="Close" color="red" v-close-popup />
+          <q-btn
+            no-caps
+            v-close-popup
+            class="bg-red-6 text-white"
+            padding="6px 30px"
+            label="Close"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>

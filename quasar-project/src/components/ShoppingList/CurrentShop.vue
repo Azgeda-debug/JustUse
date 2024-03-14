@@ -72,7 +72,13 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat no-caps label="Close" color="red" v-close-popup />
+        <q-btn
+          no-caps
+          v-close-popup
+          class="bg-red-6 text-white"
+          padding="6px 30px"
+          label="Close"
+        />
       </q-card-actions>
     </q-card>
 

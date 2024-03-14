@@ -20,7 +20,6 @@
           <q-input
             outlined
             dense
-            rounded
             type="textarea"
             label="Task Description"
             v-model="taskManagerStore.newTask.description"
@@ -38,13 +37,20 @@
           />
         </q-card-section>
 
-        <q-card-actions align="right" class="text-primary">
-          <q-btn no-caps v-close-popup color="red" label="Cancel" />
+        <q-card-actions align="right">
+          <q-btn
+            no-caps
+            v-close-popup
+            class="bg-red-6 text-white"
+            padding="6px 30px"
+            label="Close"
+          />
           <q-btn
             @click="handleForm"
             no-caps
             v-close-popup
-            color="primary"
+            class="bg-primary text-white"
+            padding="6px 30px"
             label="Add Task"
           />
         </q-card-actions>
@@ -54,19 +60,34 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import { useTaskManagerStore } from "stores/taskManagerStore";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 const taskManagerStore = useTaskManagerStore();
 
 const handleForm = () => {
   const action = taskManagerStore.newTask.action;
 
+  if (
+    !taskManagerStore.newTask.deadline ||
+    !taskManagerStore.newTask.description ||
+    !taskManagerStore.newTask.title
+  ) {
+    $q.notify({
+      type: "negative",
+      message: "Fill in all fields.",
+    });
+
+    return;
+  }
+
   if (action == "addTask") {
     taskManagerStore.firebaseAddNewTask();
-    // taskManagerStore.newTask.taskId = "";
   } else {
     taskManagerStore.firebaseUpdateTask();
   }
+  taskManagerStore.newTask.taskId = "";
 };
 </script>

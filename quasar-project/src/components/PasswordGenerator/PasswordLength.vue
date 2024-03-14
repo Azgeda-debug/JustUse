@@ -23,27 +23,37 @@
     <q-card-section>
       <div class="flex">
         <q-checkbox
-          @click="passwordStore.generatePassword()"
+          @click="passwordStore.generatePassword"
           v-model="passwordStore.uppercase"
           label="Uppercase"
         />
         <q-checkbox
-          @click="passwordStore.generatePassword()"
+          @click="passwordStore.generatePassword"
           v-model="passwordStore.lowercase"
           label="Lowercase"
         />
         <q-checkbox
-          @click="passwordStore.generatePassword()"
+          @click="passwordStore.generatePassword"
           v-model="passwordStore.numbers"
           label="Numbers"
         />
         <q-checkbox
-          @click="passwordStore.generatePassword()"
+          @click="passwordStore.generatePassword"
           v-model="passwordStore.symbols"
           label="Symbols"
         />
       </div>
     </q-card-section>
+
+    <q-card-actions align="right">
+      <q-btn
+        @click.prevent="passwordStore.generatePassword"
+        no-caps
+        label="Generate"
+        class="bg-primary text-white"
+        padding="3px 30px"
+      />
+    </q-card-actions>
   </q-card>
 </template>
 

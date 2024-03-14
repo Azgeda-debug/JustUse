@@ -43,8 +43,6 @@ export const useTaskManagerStore = defineStore('taskMangerStore', () => {
       deadline: "",
       action: "",
     };
-
-
   }
 
   const tasks = vueRef({})
